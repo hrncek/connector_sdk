@@ -35,45 +35,80 @@
     get("https://api.pingdom.com/api/2.0/actions")
   },
   
+  object_definitions: {
+    
+    checks:{
+      fields: ->(){
+        [
+          { name: 'check',type: :object,properties:[
+           { name: 'id',type: :integer },
+           { name: 'name' },
+           { name: 'resolution',type: :integer },
+           { name: 'hostname' },
+           { name: 'status' },
+           { name: 'sendtoemail' , type: :boolean },
+           { name: 'sendtosms' , type: :boolean },
+           { name: 'sendtotwitter' , type: :boolean },
+           { name: 'sendtoiphone' , type: :boolean },
+           { name: 'sendtoandroid' , type: :boolean },
+           { name: 'sendnotificationwhendown' , type: :integer },
+           { name: 'notifyagainevery' , type: :integer },
+           { name: 'notifywhenbackup' , type: :boolean },
+           { name: 'contactids' , type: :integer }]}
+          ]}
+      },
+    
+    alert:{
+      fields: ->(){
+        [
+           { name: 'contactname' },
+           { name: 'contactid' , type: :integer },
+           { name: 'time' , type: :integer },
+           { name: 'via' },
+           { name: 'status' },
+           { name: 'messageshort' },
+           { name: 'messagefull' },
+           { name: 'sentto' }
+          ]
+        }
+      }
+    },
+  
  actions: {
    
   get_detailed_check_information: {
       
-    description: 'get <span class="provider">check information</span> in <span class="provider">pingdom</span>',
+    description: 'Get <span class="provider">Check Information</span> in <span class="provider">Pingdom</span>',
       
     input_fields: ->() {[
-        {name: 'checkid',type: :integer,label:'Enter your Check ID',hint: 'Go to Monitering->Uptime->select the check you will get your CheckId in the url at the end ',optional: false}
+        { name: 'checkid' , type: :integer , label: 'Enter your Check ID' , hint: 'Go to Monitering->Uptime->select the check you will get your CheckId in the url at the end ' , optional: false}
       ]
       },
 
     execute: ->(connection, input) {
-        get("https://api.pingdom.com/api/2.0/checks/#{input['checkid']}")
+        get("https://api.pingdom.com/api/2.0/checks/#{input['checkid']}") 
       },
 
-    output_fields: ->() {
-        [ 
-          {name: 'check',type: :object,properties:[
-           {name: 'id',type: :integer},
-           {name: 'name'},
-           {name: 'hostname'},
-           {name: 'status'},
-           {name: 'resolution',type: :integer},
-           {name: 'sendtoemail',type: :boolean},
-           {name: 'sendtosms',type: :boolean},
-           {name: 'sendnotificationwhendown',type: :integer},
-           {name: 'notifyagainevery',type: :integer},
-           {name: 'notifywhenbackup',type: :boolean},
-           {name: 'contactids',type: :integer}]}
-          ]
+    output_fields: ->(object_definitions) {
+         object_definitions['checks']
+      },
+    
+    sample_output: ->(connection) {
+      check = get("https://api.pingdom.com/api/2.0/checks")['checks'].first
+      if check.present? && check['id'].present?	  
+      	get("https://api.pingdom.com/api/2.0/checks/#{check['id']}")
+      else
+        {}
+      end
       }
     }
    },
-
+  
  triggers: {
 
     new_alert: {
       
-       description: 'New <span class="provider">alert</span> in <span class="provider">pingdom</span>',
+       description: 'New <span class="provider">alert</span> in <span class="provider">Pingdom</span>',
       
        type: :paging_desc,
 
@@ -93,30 +128,26 @@
         	created_since = (input['since'] || Time.now).to_i
 					offset = (limit * page)
         	response = get("https://api.pingdom.com/api/2.0/actions?from=#{created_since}&limit=100&offset=#{offset}")                
-        	next_created_since = response['actions']['alerts'].last['time'] if response['actions']['alerts'].present?
           page = page + 1
         {
           events: response['actions']['alerts'],
-          next_page: page
+          next_page: (response['actions']['alerts']).present? && (response['actions']['alerts']).length == limit ? page + 1 : nil
+
         }
       },
-       sort_by: ->(response) {
+      
+        sort_by: ->(response) {
          response['time']
       },
-
-        output_fields: ->() {
-         [ 
-           {name: 'contactname'},
-           {name: 'contactid',type: :integer},
-           {name: 'time',type: :integer},
-           {name: 'via'},
-           {name: 'status'},
-           {name: 'messageshort'},
-           {name: 'messagefull'},
-           {name: 'sentto'}
-         ]
-        }
+      
+        output_fields: ->(object_definitions) {
+          object_definitions['alert']
+        },
+      
+        sample_output: ->(connection) {
+        get("https://api.pingdom.com/api/2.0/actions")['actions']['alerts'].first || {}
+       }
       }
-  },
-}
+    },
+  }
 
