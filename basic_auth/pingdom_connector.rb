@@ -37,6 +37,7 @@
   
   object_definitions: {
     
+<<<<<<< HEAD
     checks:{
       fields: ->(){
         [
@@ -56,11 +57,29 @@
            { name: 'notifywhenbackup' , type: :boolean },
            { name: 'contactids' , type: :integer }]}
           ]}
+=======
+    check:{
+      fields: ->(){
+        [
+           {name: 'id',type: :integer},
+           {name: 'name'},
+           {name: 'hostname'},
+           {name: 'status'},
+           {name: 'resolution',type: :integer},
+           {name: 'sendtoemail',type: :boolean},
+           {name: 'sendtosms',type: :boolean},
+           {name: 'sendnotificationwhendown',type: :integer},
+           {name: 'notifyagainevery',type: :integer},
+           {name: 'notifywhenbackup',type: :boolean},
+           {name: 'contactids',type: :integer}]
+        }
+>>>>>>> 9532c2f203ddc820710605cf088cad3ed48af2cf
       },
     
     alert:{
       fields: ->(){
         [
+<<<<<<< HEAD
            { name: 'contactname' },
            { name: 'contactid' , type: :integer },
            { name: 'time' , type: :integer },
@@ -69,6 +88,16 @@
            { name: 'messageshort' },
            { name: 'messagefull' },
            { name: 'sentto' }
+=======
+           {name: 'contactname'},
+           {name: 'contactid',type: :integer},
+           {name: 'time',type: :integer},
+           {name: 'via'},
+           {name: 'status'},
+           {name: 'messageshort'},
+           {name: 'messagefull'},
+           {name: 'sentto'}
+>>>>>>> 9532c2f203ddc820710605cf088cad3ed48af2cf
           ]
         }
       }
@@ -90,6 +119,7 @@
       },
 
     output_fields: ->(object_definitions) {
+<<<<<<< HEAD
          object_definitions['checks']
       },
     
@@ -100,6 +130,11 @@
       else
         {}
       end
+=======
+        [ 
+          {name: 'check',type: :object,properties: object_definitions['check']}
+          ]
+>>>>>>> 9532c2f203ddc820710605cf088cad3ed48af2cf
       }
     }
    },
@@ -139,6 +174,7 @@
         sort_by: ->(response) {
          response['time']
       },
+<<<<<<< HEAD
       
         output_fields: ->(object_definitions) {
           object_definitions['alert']
@@ -151,3 +187,12 @@
     },
   }
 
+=======
+
+        output_fields: ->(object_definitions) {
+          object_definitions['alert']
+        }
+      }
+  },
+}
+>>>>>>> 9532c2f203ddc820710605cf088cad3ed48af2cf
