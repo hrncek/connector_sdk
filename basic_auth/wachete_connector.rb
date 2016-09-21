@@ -10,7 +10,7 @@
 				'https: //api.wachete.com/v1/oauth/token'
 			},
 			client_id: 'workato.e35b7ccc-8d33-4303-8faa-6355f66dc8af',
-			client_secret: 'will send you via email',
+			client_secret: 'willsendyouviaemail',
 			credentials: ->(connection,
 			access_token){
 				headers('Authorization': "bearer #{access_token}")
@@ -20,7 +20,12 @@
 	object_definitions: {
 		notification: {
 			preview: ->(connection){
-				get("https://api.wachete.com/v1/alert/range?from=2006-01-25T10%3A37%3A23.574Z&to=2020-01-23T10%3A37%3A23.574Z&count=1")['results'].first
+				get("https://api.wachete.com/v1/alert/range",
+				{
+					from: "2006-01-25T10:37:23.574Z",
+					to: "2030-01-23T10:37:23.574Z",
+					count: 1
+				})['results'].first
 			},
 			fields: ->(){
 				[{
@@ -70,7 +75,12 @@
 			poll: ->(connection,
 			input,
 			last_updated_since){
-				notifications=get("https://api.wachete.com/v1/alert/range?from=2006-01-25T10%3A37%3A23.574Z&to=2020-01-23T10%3A37%3A23.574Z&count=10"){
+				notifications=get("https://api.wachete.com/v1/alert/range",
+				{
+					from: "2006-01-25T10:37:23.574Z",
+					to: "2030-01-23T10:37:23.574Z",
+					count: 10
+				}){
 					events: notifications['data']
 				}
 			},
