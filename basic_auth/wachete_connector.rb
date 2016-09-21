@@ -24,7 +24,7 @@
 				{
 					from: "2006-01-25T10:37:23.574Z",
 					to: "2030-01-23T10:37:23.574Z",
-					count: 1
+					count: "1"
 				})['results'].first
 			},
 			fields: ->(){
@@ -79,7 +79,7 @@
 				{
 					from: "2006-01-25T10:37:23.574Z",
 					to: "2030-01-23T10:37:23.574Z",
-					count: 10
+					count: "10"
 				}){
 					events: notifications['data']
 				}
