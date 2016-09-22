@@ -35,16 +35,16 @@
 					type: : object,
 					properties: [{
 						name: 'definition',
-						type: : object,
+						type: :object,
 						properties: [{
 							name: 'name',
-							hint: 'Nameofwachetyoureceivednotificationfor'
+							hint: 'Name of wachet you received notification for'
 						}]
 					}]
 				},
 				{
 					name: 'timestampUtc',
-					type: : timestamp,
+					type: :timestamp,
 					hint: 'Timewhennotificationhappened'
 				},
 				{
